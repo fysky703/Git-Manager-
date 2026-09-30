@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Git Manager — Folder & Zip to GitHub</title>
+<link rel="stylesheet" href="css/app.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Git Manager</h1>
+    <p class="sub">Pick a folder or zip → preview code → zip → push to GitHub</p>
+  </div>
+  <span class="badge">static • Vercel ready</span>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1. Source files</h2>
+    <div class="row">
+      <label class="btn">📁 Pick folder
+        <input id="dirPick" type="file" webkitdirectory directory multiple hidden>
+      </label>
+      <label class="btn">🤐 Pick zip
+        <input id="zipPick" type="file" accept=".zip,application/zip" hidden>
+      </label>
+      <button id="clearBtn" class="btn ghost">Clear</button>
+    </div>
+    <p class="hint">Folder pick uses <code>webkitdirectory</code> (Chrome / Edge / Android Chrome). Or drop a <code>.zip</code> — it is extracted in-browser, no upload to any server.</p>
+    <div id="fileMeta" class="meta">No files loaded.</div>
+    <ul id="fileList" class="files"></ul>
+  </section>
+
+  <section class="card">
+    <h2>2. Code preview</h2>
+    <p class="hint">Click a text file above to view it here. Binary files are skipped. Everything stays on-device.</p>
+    <div class="row">
+      <strong id="prevName">nothing selected</strong>
+      <span id="prevSize" class="meta"></span>
+    </div>
+    <pre id="preview"><code>Select a file to preview code…</code></pre>
+  </section>
+
+  <section class="card">
+    <h2>3. Zip (in-browser)</h2>
+    <div class="row">
+      <button id="zipBtn" class="btn">⬇ Build .zip</button>
+      <a id="zipDl" class="btn ghost" style="display:none">Download zip</a>
+    </div>
+    <p class="hint">Zip is created locally with JSZip. Use it to attach to a release or push manually.</p>
+  </section>
+
+  <section class="card">
+    <h2>4. Push to GitHub (browser + token)</h2>
+    <div class="grid">
+      <label>Repository
+        <input id="repo" placeholder="owner/repo  e.g. fysky703/git-manager">
+      </label>
+      <label>Branch
+        <input id="branch" value="main">
+      </label>
+      <label>Commit message
+        <input id="msg" value="Upload via Git Manager">
+      </label>
+      <label>Personal Access Token (not stored)
+        <input id="token" type="password" placeholder="ghp_…  (contents:write)" autocomplete="off">
+      </label>
+    </div>
+    <p class="warn">⚠ Token lives only in memory for this page session. Never commit it. Use a fine-grained token with <b>Contents: read/write</b> on this repo only. Revoke after use if on a shared device.</p>
+    <div class="row">
+      <button id="pushBtn" class="btn primary">⬆ Push files to GitHub</button>
+    </div>
+    <div class="row">
+      <progress id="prog" value="0" max="100" style="display:none"></progress>
+      <span id="progTxt" class="meta"></span>
+    </div>
+    <pre id="log" class="log">Ready.
+• Small text files (&lt; ~900KB each) push via Contents API.
+• Large/binary files are skipped with a warning.
+• Existing files are updated (requires their sha).</pre>
+  </section>
+</main>
+
+<footer>
+  <small>Git Manager • single static site • token never leaves your browser except to api.github.com</small>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
